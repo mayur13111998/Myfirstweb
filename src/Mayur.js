@@ -19,6 +19,7 @@ const Mayur = () => {
     return (
         <div>
             <form onSubmit={handleSubmit}>
+            <h1>mayur</h1>
                 <input type="text" value={email} onChange={(e) => { setEmail(e.target.value) }} />
                 <input type="password" value={password} onChange={(e) => { setPassword(e.target.value) }} />
                 <button type="submit" >submit</button>
