@@ -59,10 +59,6 @@ const Orders = () => {
         </>)
     }
 
-    const callme = () => {
-       console.log('mayu') 
-    }
-
     const deleteorder = async (order_no) => {
         await axios.delete(`http://127.0.0.1:3333/api/order/${order_no}`).then(res=>{
             if(res.status === 200){

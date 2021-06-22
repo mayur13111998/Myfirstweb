@@ -1,5 +1,5 @@
 //init code 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { Link } from 'react-router-dom';
 // icon 
@@ -7,6 +7,26 @@ import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import AddIcon from '@material-ui/icons/Add';
+
+const Product_img = (props) => {
+    const [image, setImage] = useState('')
+    const [isLoad, setLoad] = useState(false)
+    const loadimge = async () => {
+        await axios.get(`http://127.0.0.1:3333/api/product/${props.id}/product_images`).then(res => {
+            setImage(res.data.result)
+            setLoad(true)
+        })
+    }
+    useEffect(() => {
+        loadimge()
+    }, [])
+    return (<>
+        {isLoad &&
+            <img src={`http://127.0.0.1:3333/file/${image}`} width="100px" alt="product_image" />}
+    </>)
+}
+
+
 // product component
 const Products = () => {
     const [isLoading, setIsLoading] = useState(true)
@@ -28,7 +48,7 @@ const Products = () => {
     }, [])
     // this method is delete product
     const deleteProduct = async (id) => {
-        await axios.delete(`http://127.0.0.1:3333/api/product/${id}`).then(res=>{
+        await axios.delete(`http://127.0.0.1:3333/api/product/${id}`).then(res => {
             LoadProduct()
         })
         LoadProduct()
@@ -50,39 +70,41 @@ const Products = () => {
                     <Link to="/addproduct"><button type="button" className="btn btn-primary "><AddIcon /> Add Product</button></Link>
                 </div>
                 <div className="">
-                {/* product table start here  */}
-                {
-                    isLoading ? message() :
-                        <div className="table-responsive">
-                            <table  className="table ">
-                                <thead className="text-white">
-                                    <tr>
-                                        <td>#</td>
-                                        <td>Product Name</td>
-                                        <td>Product Price</td>
-                                        <td>Product Image</td>
-                                        <td>Action</td>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {product.map((data, index) => (
-                                        <tr key={index} className="text-white">
-                                            <td >{index + 1}</td>
-                                            <td>{data.product_name}</td>
-                                            <td>{data.product_price}.00</td>
-                                            <td><img src={`http://127.0.0.1:3333/file/${data.product_image}`} width="100px" /></td>
-                                            <td>
-                                                <Link to={`/product/${data.product_id}/edit`}> <button type="button" className="btn btn-primary"><EditIcon /></button></Link>
-                                                <Link to={`/product/${data.product_id}`}><button type="button" className="btn btn-outline-primary ml-2 mr-2"><VisibilityIcon /></button></Link>
-                                                <button type="button" className="btn btn-danger" onClick={() => deleteProduct(data.product_id)}><DeleteIcon /></button>
-                                            </td>
+                    {/* product table start here  */}
+                    {
+                        isLoading ? message() :
+                            <div className="table-responsive">
+                                <table className="table ">
+                                    <thead className="text-white">
+                                        <tr>
+                                            <td>#</td>
+                                            <td>Product Name</td>
+                                            <td>Product Price</td>
+                                            <td>Product Image</td>
+                                            <td>Action</td>
                                         </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                }
-                {/* end of product section  */}
+                                    </thead>
+                                    <tbody>
+                                        {product.map((data, index) => (
+                                            <tr key={index} className="text-white">
+                                                <td >{index + 1}</td>
+                                                <td>{data.product_name}</td>
+                                                <td>{data.product_price}.00</td>
+                                                <td>
+                                                    <Product_img id={data.product_id} />
+                                                </td>
+                                                <td>
+                                                    <Link to={`/product/${data.product_id}/edit`}> <button type="button" className="btn btn-primary"><EditIcon /></button></Link>
+                                                    <Link to={`/product/${data.product_id}`}><button type="button" className="btn btn-outline-primary ml-2 mr-2"><VisibilityIcon /></button></Link>
+                                                    <button type="button" className="btn btn-danger" onClick={() => deleteProduct(data.product_id)}><DeleteIcon /></button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                    }
+                    {/* end of product section  */}
                 </div>
             </div>
         </div>

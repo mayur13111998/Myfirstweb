@@ -24,6 +24,7 @@ const Addorderitem = () => {
     const [order, setOrder] = useState([])
     const [data, setData] = useState([])
     const [Product_name, setProduct_name] = useState()
+    const [product_select,setProduct_select] = useState("")
     const loadCustomer = async () => {
         await axios.get('http://127.0.0.1:3333/api/customer').then(res => {
             if (res.status === 201) {
@@ -51,6 +52,7 @@ const Addorderitem = () => {
         loadCustomer();
         loadProduct();
     }, [])
+    // Order is not load that to message is display 
     const message = () => {
         return (
             <div className="text-white">
@@ -63,22 +65,10 @@ const Addorderitem = () => {
         const chack = data.find(data => data.Product_name === 'Pen')
         console.log(chack)
     }
-    const mayuradd = () => {
-        setData([
-            ...data, {
-                product_id: product_id,
-                Product_name: Product_name,
-                quantity: quantity,
-                price: price,
-                total_amount: total_amount
-            }])
-
-    }
     const [cartMessage, setcartMessage] = useState('')
     const [display, setDisplay] = useState('none')
     const addorder = async (e) => {
         if (data.length === 0) {
-
             setDisplay('none')
             setData([
                 ...data, {
@@ -95,6 +85,7 @@ const Addorderitem = () => {
                 setDisplay('')
                 setcartMessage('This is product is already in the cart!')
             } else {
+                setProduct_select("")
                 setDisplay('none')
                 setData([
                     ...data, {
@@ -106,6 +97,7 @@ const Addorderitem = () => {
                     }])
             }
         }
+
         loadArry()
         loadCustomer()
         setMainTotal(mainTotal + total_amount)
@@ -164,19 +156,11 @@ const Addorderitem = () => {
         }
     }
 
+
     const remove = async () => {
         setData([])
+        setMainTotal(0)
     }
-
-
-    const [quatity_array, setQuatity_array] = useState('')
-
-    useEffect(() => {
-        if (data.length === 0) {
-            setMainTotal(0)
-        }
-    }, [mainTotal])
-
 
     const cartquantityINC = (index, quantity) => {
         let total=  data[index].total_amount
@@ -226,8 +210,8 @@ const Addorderitem = () => {
                                             <div className="row mt-4">
 
                                                 <div className="col-6">
-                                                    <select className="form-select form-select-lg mb-3" defaultValue='' aria-label=".form-select-lg example">
-                                                        <option value="" selected disabled>Product</option>
+                                                    <select className="form-select form-select-lg mb-3" defaultValue='' value="" aria-label=".form-select-lg example">
+                                                        <option value={product_select} selected disabled></option>
                                                         {product.map((data, index) => (
                                                             <option value={data.product_name} key={index} onClick={() => {
                                                                 setDisplay('none')

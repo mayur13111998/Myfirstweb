@@ -7,21 +7,16 @@ const ProductData = (props) => {
     const [product, setProduct] = useState([])
 
     const loadproduct = async () => {
-        await axios.get(`http://127.0.0.1:3333/api/product/${props.id}`).then(res => {
-            setProduct(res.data.product)
-        }).catch(err => console.log(err))
+       const product=  await axios.get(`http://127.0.0.1:3333/api/product/${props.id}`)
+        setProduct( product.data.product)
     }
     useEffect(() => {
         loadproduct()
     }, [])
     return (<>
         <div>Produc Name : {product.product_name}</div>
-        <img src={`http://127.0.0.1:3333/file/${product.product_image}`} width="50px"/>
     </>)
 }
-
-
-
 
 const Loadcustomer = (props) => {
     const [customer, setCustomer] = useState({
@@ -34,7 +29,6 @@ const Loadcustomer = (props) => {
                 customer_id: res.data.customer.customer_id,
                 customer_name: res.data.customer.customer_name
             })
-            console.log(res.data.customer)
         })
     }
     useEffect(() => {
@@ -98,7 +92,7 @@ const Orderitem = () => {
 
                             <div className="row text-white">
                                 <div className="col-md-12">
-                                    <table class="table ">
+                                    <table className="table ">
                                         <thead >
                                             <tr className="text-white" >
                                                 <th scope="col" >Product Items</th>
